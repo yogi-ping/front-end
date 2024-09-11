@@ -11,7 +11,7 @@ src
 - utils //유틸함수
 - assets //이미지
 - api // api파일
-- hooks //사용자 훅
+- hooks //커스텀 훅
 ### git 브랜치 전략(git flow 전략도입)
 - main 배포코드
 - develop 다음버전을 위한 개발코드
