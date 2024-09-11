@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
+}
+
+:root {
+  --surfaceinput: rgba(255, 255, 255, 1);
+  --texticonhighemp: rgba(0, 0, 0, 1);
+}
