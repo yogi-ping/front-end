@@ -12,7 +12,11 @@ src
 - assets //이미지
 - api // api파일
 - hooks //사용자 훅
-
+### git 브랜치 전략(git flow 전략도입)
+- main 배포코드
+- develop 다음버전을 위한 개발코드
+- feature 하나의 기능을 개발하기 위한 코드
+- hotfix 배포된 버전에 문제가 생겼을 때 해결하는 코드
 ### 커밋 메시지 구조
 
 타입(스코프) : 주제(제목) // Header(헤더)
