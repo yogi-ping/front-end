@@ -1,13 +1,38 @@
-import Header from './components/Header'; // Header 컴포넌트를 올바르게 import
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router-dom';
+import Header from './components/Header'; // Header 컴포넌트 올바르게 import
 import Contents from './components/Contents';
+import Login from './components/Login'; // Login 컴포넌트 import
+import './App.css';
 
 function App() {
   return (
+    <Router>
+      <MainLayout />
+    </Router>
+  );
+}
+
+function MainLayout() {
+  const location = useLocation();
+
+  return (
     <div>
-      <Header />
-      <Contents />
-      <main></main>
+      {/* 로그인 페이지가 아닐 때만 Header 렌더링 */}
+      {location.pathname !== '/login' && <Header />}
+
+      <main>
+        <Routes>
+          {/* 기본 경로에 Contents를 보여줌 */}
+          <Route path='/' element={<Contents />} />
+          {/* 로그인 페이지로 이동 */}
+          <Route path='/login' element={<Login />} />
+        </Routes>
+      </main>
     </div>
   );
 }

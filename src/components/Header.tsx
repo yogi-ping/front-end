@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export const Header = (): JSX.Element => {
   return (
     <div className='flex w-full max-w-screen-xl mx-auto h-20 items-center relative bg-white'>
@@ -23,9 +25,11 @@ export const Header = (): JSX.Element => {
         <div className='text-sm font-medium text-texticonhighemp whitespace-nowrap'>
           이용방법
         </div>
-        <div className='text-sm font-medium text-texticonhighemp whitespace-nowrap'>
-          로그인
-        </div>
+        <Link to='/login'>
+          <div className='text-sm font-medium text-texticonhighemp whitespace-nowrap'>
+            로그인
+          </div>
+        </Link>
       </div>
     </div>
   );
