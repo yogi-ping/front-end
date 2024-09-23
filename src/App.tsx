@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import Header from './components/Header'; // Header 컴포넌트 올바르게 import
 import Contents from './components/Contents';
+import { Plan } from './pages/Plan';
 import Login from './components/Login'; // Login 컴포넌트 import
 import './App.css';
 
@@ -31,6 +32,7 @@ function MainLayout() {
           <Route path='/' element={<Contents />} />
           {/* 로그인 페이지로 이동 */}
           <Route path='/login' element={<Login />} />
+          <Route path='/plan' element={<Plan/>}/>
         </Routes>
       </main>
     </div>
