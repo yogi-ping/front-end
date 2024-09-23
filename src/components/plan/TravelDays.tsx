@@ -1,4 +1,4 @@
-import '../css/common.css';
+import '../../css/common.css';
 
 export const TravelDays:React.FC = () => {
   return(

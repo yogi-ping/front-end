@@ -1,5 +1,5 @@
 import { Avartar } from './Avartar';
-import '../css/common.css';
+import '../../css/common.css';
 
 export const Friends:React.FC = () => {
   return(

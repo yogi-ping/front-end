@@ -5,9 +5,9 @@ import {
   useLocation,
 } from 'react-router-dom';
 import Header from './components/Header'; // Header 컴포넌트 올바르게 import
-import Contents from './components/Contents';
+import Contents from './components/home/Contents';
 import { Plan } from './pages/Plan';
-import Login from './components/Login'; // Login 컴포넌트 import
+import Login from './components/login/Login'; // Login 컴포넌트 import
 import './App.css';
 
 function App() {

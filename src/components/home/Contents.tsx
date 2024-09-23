@@ -1,5 +1,5 @@
-import searchIcon from '../assets/search.svg';
-import locationIcon from '../assets/location.svg';
+import searchIcon from '../../assets/search.svg';
+import locationIcon from '../../assets/location.svg';
 import { useState } from 'react';
 
 export const Contents = (): JSX.Element => {

@@ -1,4 +1,4 @@
-import {SideMenu} from '../components/SideMenu';
+import {SideMenu} from '../components/plan/SideMenu';
 
 export const Plan:React.FC = () => {
   return(
