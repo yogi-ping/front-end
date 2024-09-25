@@ -1,4 +1,4 @@
-import { Avartar } from './Avartar';
+import { Avartar } from '../../common/Avartar';
 import '../../css/common.css';
 
 export const Friends:React.FC = () => {
