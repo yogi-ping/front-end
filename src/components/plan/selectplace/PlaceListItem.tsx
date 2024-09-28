@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 function PlaceListItem() {
-  return (
-    <div>PlaceListItem</div>
-  )
+  return <div>PlaceListItem</div>;
 }
 
-export default PlaceListItem
+export default PlaceListItem;

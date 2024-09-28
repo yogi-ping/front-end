@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 function SelectPlace() {
-  return (
-    <div>SelectPlace</div>
-  )
+  return <div>SelectPlace</div>;
 }
 
-export default SelectPlace
+export default SelectPlace;
