@@ -1,27 +1,18 @@
-// home/SearchBar.tsx
 import React from 'react';
-import searchIcon from '../../assets/search.svg';
+import SearchInput from '../common/SearchInput'; // 공통 SearchInput 컴포넌트 사용
 
 interface SearchBarProps {
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
+    searchTerm: string;
+    setSearchTerm: (value: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm }) => (
-  <div className='relative w-full max-w-md h-12 bg-gray-100 rounded-full overflow-hidden'>
-    <img
-      className='absolute w-4 h-4 top-1/2 left-3 transform -translate-y-1/2'
-      alt='Search'
-      src={searchIcon}
+    <SearchInput
+        searchTerm={searchTerm}
+        onSearch={setSearchTerm}
+        placeholder='어디로 여행을 떠나시나요?'
+        className='w-full max-w-md h-13' // 검색바 크기를 여기서 조정
     />
-    <input
-      type='text'
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className='w-full h-full pl-10 bg-gray-100 text-gray-700 text-sm focus:outline-none rounded-full'
-      placeholder='어디로 여행을 떠나시나요?'
-    />
-  </div>
 );
 
 export default SearchBar;
