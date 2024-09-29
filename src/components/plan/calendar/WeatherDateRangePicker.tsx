@@ -18,7 +18,7 @@ const WeatherDateRangePicker: React.FC = () => {
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [selectedCity, setSelectedCity] = useState<City>(cities[0]);
   
-  const API_KEY = 'b11a66635bd096c5e3406d2d68343c35';
+  const API_KEY = 'api key';
 
   useEffect(() => {
     const fetchWeatherData = async () => {
