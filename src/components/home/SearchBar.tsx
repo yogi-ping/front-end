@@ -11,7 +11,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm }) => (
         searchTerm={searchTerm}
         onSearch={setSearchTerm}
         placeholder='어디로 여행을 떠나시나요?'
-        className='w-full max-w-md h-13' // 검색바 크기를 여기서 조정
+        className='w-full max-w-md h-10' // 검색바 크기를 여기서 조정
     />
 );
 
