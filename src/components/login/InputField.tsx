@@ -1,6 +1,7 @@
 // login/Input.tsx
 import React from 'react';
 
+// InputFieldProps 인터페이스 정의
 interface InputFieldProps {
   id: string;
   type: string;
@@ -8,6 +9,7 @@ interface InputFieldProps {
   placeholder: string;
 }
 
+// InputField 컴포넌트
 const InputField = ({ id, type, label, placeholder }: InputFieldProps) => (
   <div className='mb-4'>
     <label
