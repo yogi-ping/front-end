@@ -19,19 +19,33 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({ date, weatherData, dat
   const isInRange = dateRange.from && dateRange.to && date > dateRange.from && date < dateRange.to;
   const weatherForDay = weatherData.find(d => isSameDay(d.date, date));
 
+  // 날짜 클래스
   const getDateClasses = () => {
-    const classes = ['wdrp-calendar-day', 'text-center', 'p-1', 'cursor-pointer', 'relative', 'h-16', 'flex', 'flex-col', 'justify-between'];
-    
-    if (isPastDate && !isTodayDate) classes.push('wdrp-past-date', 'text-gray-400');
-    if (isTodayDate) classes.push('wdrp-today', 'font-bold');
-    if (isSelected || isEndDate) classes.push('wdrp-selected', 'bg-[#FED766]', 'bg-opacity-90');
-    if (isInRange) classes.push('wdrp-in-range', 'bg-[#FED766]', 'bg-opacity-20');
-    if (isSaturdayDate && !isPastDate) classes.push('wdrp-saturday', 'text-blue-500');
-    if (isSundayDate && !isPastDate) classes.push('wdrp-sunday', 'text-red-500');
+    const baseClasses = [
+      'wdrp-calendar-day', 
+      'text-center', 
+      'p-1', 
+      'cursor-pointer', 
+      'relative', 
+      'h-16', 
+      'flex', 
+      'flex-col', 
+      'justify-between'
+    ];
 
-    return classes.join(' ');
+    const conditionalClasses = [
+      isPastDate && !isTodayDate ? 'wdrp-past-date text-gray-400' : '',
+      isTodayDate ? 'wdrp-today font-bold' : '',
+      (isSelected || isEndDate) ? 'wdrp-selected bg-[#FED766] bg-opacity-90' : '',
+      isInRange ? 'wdrp-in-range bg-[#FED766] bg-opacity-20' : '',
+      isSaturdayDate && !isPastDate ? 'wdrp-saturday text-blue-500' : '',
+      isSundayDate && !isPastDate ? 'wdrp-sunday text-red-500' : ''
+    ].filter(Boolean); // 빈 문자열 제거
+
+    return [...baseClasses, ...conditionalClasses].join(' ');
   };
 
+  // 클릭 이벤트 핸들러
   const handleClick = () => {
     if (!isPastDate || isTodayDate) {
       handleSelect(date);

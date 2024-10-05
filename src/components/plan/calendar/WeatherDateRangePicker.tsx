@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';//범위 선택시 한국어로 월화수목금토일
 import { Calendar as CalendarIcon, X } from 'lucide-react';
 import { DateRange, WeatherData, City, cities } from './types';
 import { CitySelector } from './CitySelector';
 import { CalendarHeader } from './CalendarHeader';
 import { Calendar } from './Calendar';
 import {WEATHER_API_KEY} from '../../../api/api';
-//화면에서 나타내고 싶을 때 <WeatherDateRangePicker />로 불러오면 됨
 
-const WeatherDateRangePicker: React.FC = () => {
+
+interface WeatherDateRangePickerProps {
+  onDateRangeChange: (dateRange: DateRange) => void;
+}
+
+const WeatherDateRangePicker: React.FC<WeatherDateRangePickerProps> = ({ onDateRangeChange}) => {
   const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined,
@@ -50,51 +55,51 @@ const WeatherDateRangePicker: React.FC = () => {
 
     fetchWeatherData();
   }, [selectedCity]);
-
+//하위 컴포넌트에서 plan으로 데이터 전달
   const handleSelect = (date: Date) => {
+    let newDateRange: DateRange;
     if (!dateRange.from || (dateRange.from && dateRange.to)) {
-      setDateRange({ from: date, to: undefined });
+      newDateRange={ from: date, to: undefined };
     } else if (dateRange.from && !dateRange.to) {
       if (date >= dateRange.from) {
-        setDateRange({ ...dateRange, to: date });
+        newDateRange= { ...dateRange, to: date };
       } else {
-        setDateRange({ from: date, to: undefined });
+        newDateRange= { from: date, to: undefined };
       }
+    }else{
+      newDateRange = dateRange;
     }
+    setDateRange(newDateRange);
+
+    //날짜가 선택되면 (상위 컴포넌트)에 알림
+    onDateRangeChange(newDateRange)
   };
 
   const handleConfirmRange = () => {
     setIsCalendarOpen(false);
+    //확인 버튼을 누르면 plan에 최종 선택 날짜 범위 알림
+    onDateRangeChange(dateRange);
   };
 
   return (
-    <div className="wdrp-container flex flex-col space-y-4">
-      <div className="wdrp-input-container flex space-x-4">
-        <input
-          type="text"
-          placeholder="Start Date"
-          value={dateRange.from ? format(dateRange.from, 'yyyy/MM/dd') : ''}
-          readOnly
-          className="wdrp-input px-3 py-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="End Date"
-          value={dateRange.to ? format(dateRange.to, 'yyyy/MM/dd') : ''}
-          readOnly
-          className="wdrp-input px-3 py-2 border rounded"
-        />
-        <button 
-          onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-          className="wdrp-calendar-button px-3 py-2 border rounded hover:bg-[#FED766] transition-colors duration-200"
-        >
-          <CalendarIcon className="wdrp-calendar-icon h-5 w-5" />
-        </button>
+    <div className="wdrp-container flex items-center space-x-2 w-full">
+      <div className="flex-grow flex items-center">
+      <span className="text-sm sm:text-base md:text-lg font-semibold truncate">
+          {dateRange.from && dateRange.to
+            ? `${format(dateRange.from, 'yyyy.MM.dd(EEE)', { locale: ko })} ~ ${format(dateRange.to, 'yyyy.MM.dd(EEE)', { locale: ko })}`
+            : '날짜를 선택하세요'}
+        </span>
       </div>
+      <button 
+        onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+        className="wdrp-calendar-button flex-shrink-0 p-2 border rounded hover:bg-[#FED766] transition-colors duration-200"
+      >
+        <CalendarIcon className="wdrp-calendar-icon h-5 w-5" />
+      </button>
 
       {isCalendarOpen && (
         <div className="wdrp-modal fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="wdrp-modal-content bg-white rounded-lg p-4 shadow-lg relative" style={{ width: '700px', height: '600px' }}>
+          <div className="wdrp-modal-content bg-white rounded-lg p-4 shadow-lg relative w-11/12 max-w-3xl h-auto max-h-[90vh] overflow-auto">
             <button 
               onClick={() => setIsCalendarOpen(false)} 
               className="wdrp-close-button absolute top-2 right-2 p-1 rounded-full hover:bg-[#FED766]"
@@ -117,7 +122,7 @@ const WeatherDateRangePicker: React.FC = () => {
               dateRange={dateRange}
               handleSelect={handleSelect}
             />
-            <div className="wdrp-confirm-container flex justify-end mt-10">
+            <div className="wdrp-confirm-container flex justify-end mt-4">
               <button 
                 onClick={handleConfirmRange} 
                 className="wdrp-confirm-button px-4 py-2 bg-gray-900 text-white rounded hover:bg-[#FED766] hover:text-black transition-colors duration-200"
