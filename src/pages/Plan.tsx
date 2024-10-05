@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Header } from '../components/plan/detailplan/Header';
 import { IndexSidemenu } from '../components/plan/sidemenu/IndexSidemenu';
 import { PlaceList } from '../components/plan/selectplace/PlaceList';
+import WeatherDateRangePicker from '../components/plan/calendar/WeatherDateRangePicker';
 
 //plan 컴포넌트를 최상위 컴포넌트로 설정
 //daterange상태 정의
@@ -27,6 +28,7 @@ export const Plan: React.FC = () => {
       <IndexSidemenu dateRange={dateRange} />
       <Header onDateRangeChange={handleDateRangeChange} />
       <PlaceList />
+      
     </div>
   );
 };
