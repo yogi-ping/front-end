@@ -1,12 +1,34 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 불러오기
-import InputField from './Input'; // InputField 컴포넌트 가져오기
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import InputField from '../common/InputField';
+import axios from 'axios';
 
 const LoginForm = () => {
-    const navigate = useNavigate(); // useNavigate 훅 사용
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const handleJoinClick = () => {
-        navigate('/join'); // '/join' 경로로 이동
+    // api 주소 넣어주면됨
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post(
+                'http://your-backend-url.com/api/login',
+                {
+                    email,
+                    password,
+                }
+            );
+
+            if (response.status === 200) {
+                // 로그인 성공 시 처리
+                navigate('/');
+            } else {
+                alert('로그인 실패: 잘못된 이메일 또는 비밀번호');
+            }
+        } catch (error) {
+            console.error('로그인 요청 중 오류 발생:', error);
+            alert('로그인 중 문제가 발생했습니다.');
+        }
     };
 
     return (
@@ -18,40 +40,29 @@ const LoginForm = () => {
                     </h2>
 
                     <InputField
-                        id='email' // id 전달
+                        id='email'
                         type='email'
                         label='이메일'
                         placeholder='이메일을 입력하세요'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
 
                     <InputField
-                        id='password' // id 전달
+                        id='password'
                         type='password'
                         label='비밀번호'
                         placeholder='비밀번호를 입력하세요'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <div className='flex justify-between text-sm mb-6'>
-                        <span className='text-gray-500 cursor-pointer'>
-                            비밀번호를 잊으셨나요?
-                        </span>
-                    </div>
-
-                    <button className='w-full bg-[#2b79c2] text-white text-lg py-3 rounded-md hover:bg-blue-700 transition-colors'>
+                    <button
+                        onClick={handleLogin}
+                        className='w-full bg-[#2b79c2] text-white text-lg py-3 rounded-md hover:bg-blue-700 transition-colors'
+                    >
                         로그인
                     </button>
-
-                    <div className='mt-6 text-center text-sm'>
-                        <span className='text-gray-500'>
-                            아직 회원이 아니세요?
-                        </span>{' '}
-                        <span
-                            className='text-blue-600 cursor-pointer'
-                            onClick={handleJoinClick} // 클릭 시 handleJoinClick 함수 호출
-                        >
-                            이메일 회원가입
-                        </span>
-                    </div>
                 </div>
             </div>
         </div>
