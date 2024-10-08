@@ -8,11 +8,10 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    // api 주소 넣어주면됨
     const handleLogin = async () => {
         try {
             const response = await axios.post(
-                'http://your-backend-url.com/api/login',
+                'http://localhost:7777/auth/login',
                 {
                     email,
                     password,
@@ -20,7 +19,11 @@ const LoginForm = () => {
             );
 
             if (response.status === 200) {
-                // 로그인 성공 시 처리
+                // 백엔드에서 받은 토큰을 로컬 스토리지에 저장
+                const token = response.data.token;
+                localStorage.setItem('token', token);
+
+                // 로그인 성공 시 메인 페이지로 이동
                 navigate('/');
             } else {
                 alert('로그인 실패: 잘못된 이메일 또는 비밀번호');
@@ -31,13 +34,15 @@ const LoginForm = () => {
         }
     };
 
+    const handleJoinClick = () => {
+        navigate('/join'); // '/join' 경로로 이동
+    };
+
     return (
         <div className='flex-1 flex justify-center'>
             <div className='w-full max-w-md'>
                 <div className='bg-white rounded-lg border border-gray-300 p-8'>
-                    <h2 className='text-xl font-bold mb-6 text-center'>
-                        로그인
-                    </h2>
+                    <h2 className='text-xl font-semibold mb-6 '>로그인</h2>
 
                     <InputField
                         id='email'
@@ -63,6 +68,19 @@ const LoginForm = () => {
                     >
                         로그인
                     </button>
+
+                    {/* 회원가입 섹션 */}
+                    <div className='mt-6 text-center text-sm'>
+                        <span className='text-gray-500'>
+                            아직 회원이 아니세요?
+                        </span>{' '}
+                        <span
+                            className='text-blue-600 cursor-pointer'
+                            onClick={handleJoinClick} // 클릭 시 handleJoinClick 함수 호출
+                        >
+                            이메일 회원가입
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
