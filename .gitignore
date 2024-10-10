@@ -25,3 +25,6 @@ dist-ssr
 
 # api 키 숨기기
 .env
+
+# prettierrc
+.prettierrc
