@@ -1,34 +1,46 @@
-// home/TravelDestinationBox.tsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import locationIcon from '../../assets/location.svg';
 import { locations } from './TravelDestinationItem';
 
-const TravelDestinationBox: React.FC = () => (
-  <div className='w-full max-w-md'>
-    {locations.map((location, index) => (
-      <LocationButton
-        key={location.name}
-        name={location.name}
-        country={location.country}
-        roundedTop={index === 0}
-        roundedBottom={index === locations.length - 1}
-      />
-    ))}
-  </div>
-);
+const TravelDestinationBox: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLocationSelect = (location: { name: string; country: string }) => {
+    navigate('/plan', { state: { selectedCity: location.name } });
+  };
+
+  return (
+    <div className='w-full max-w-md'>
+      {locations.map((location, index) => (
+        <LocationButton
+          key={location.name}
+          name={location.name}
+          country={location.country}
+          roundedTop={index === 0}
+          roundedBottom={index === locations.length - 1}
+          onClick={() => handleLocationSelect(location)}
+        />
+      ))}
+    </div>
+  );
+};
 
 const LocationButton = ({
   name,
   country,
   roundedTop,
   roundedBottom,
+  onClick,
 }: {
   name: string;
   country: string;
   roundedTop?: boolean;
   roundedBottom?: boolean;
+  onClick: () => void;
 }): JSX.Element => (
   <button
+    onClick={onClick}
     className={`w-full flex items-center gap-3 p-3 bg-gray-100 ${
       roundedTop ? 'rounded-t-2xl' : ''
     } ${
