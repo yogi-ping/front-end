@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';//범위 선택시 한국어로 월화수목금토일
+import { ko } from 'date-fns/locale';
 import { Calendar as CalendarIcon, X } from 'lucide-react';
 import { DateRange, WeatherData, City, cities } from './types';
-import { CitySelector } from './CitySelector';
 import { CalendarHeader } from './CalendarHeader';
 import { Calendar } from './Calendar';
-import {WEATHER_API_KEY} from '../../../api/api';
-
+import { WEATHER_API_KEY } from '../../../api/api';
 
 interface WeatherDateRangePickerProps {
   onDateRangeChange: (dateRange: DateRange) => void;
+  selectedCity: string;
 }
 
-const WeatherDateRangePicker: React.FC<WeatherDateRangePickerProps> = ({ onDateRangeChange}) => {
+const WeatherDateRangePicker: React.FC<WeatherDateRangePickerProps> = ({ onDateRangeChange, selectedCity }) => {
   const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined,
@@ -22,17 +21,17 @@ const WeatherDateRangePicker: React.FC<WeatherDateRangePickerProps> = ({ onDateR
   const [isCalendarOpen, setIsCalendarOpen] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-  const [selectedCity, setSelectedCity] = useState<City>(cities[0]);
   
   const API_KEY = WEATHER_API_KEY;
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
+        const city = cities.find(c => c.name === selectedCity) || cities[0];
         const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast`, {
           params: {
-            lat: selectedCity.lat,
-            lon: selectedCity.lon,
+            lat: city.lat,
+            lon: city.lon,
             appid: API_KEY,
             units: 'metric',
           },
@@ -55,36 +54,34 @@ const WeatherDateRangePicker: React.FC<WeatherDateRangePickerProps> = ({ onDateR
 
     fetchWeatherData();
   }, [selectedCity]);
-//하위 컴포넌트에서 plan으로 데이터 전달
+
   const handleSelect = (date: Date) => {
     let newDateRange: DateRange;
     if (!dateRange.from || (dateRange.from && dateRange.to)) {
-      newDateRange={ from: date, to: undefined };
+      newDateRange = { from: date, to: undefined };
     } else if (dateRange.from && !dateRange.to) {
       if (date >= dateRange.from) {
-        newDateRange= { ...dateRange, to: date };
+        newDateRange = { ...dateRange, to: date };
       } else {
-        newDateRange= { from: date, to: undefined };
+        newDateRange = { from: date, to: undefined };
       }
-    }else{
+    } else {
       newDateRange = dateRange;
     }
     setDateRange(newDateRange);
 
-    //날짜가 선택되면 (상위 컴포넌트)에 알림
-    onDateRangeChange(newDateRange)
+    onDateRangeChange(newDateRange);
   };
 
   const handleConfirmRange = () => {
     setIsCalendarOpen(false);
-    //확인 버튼을 누르면 plan에 최종 선택 날짜 범위 알림
     onDateRangeChange(dateRange);
   };
 
   return (
     <div className="wdrp-container flex items-center space-x-2 w-full">
       <div className="flex-grow flex items-center">
-      <span className="text-sm sm:text-base md:text-lg font-semibold truncate">
+        <span className="text-sm sm:text-base md:text-lg font-semibold truncate">
           {dateRange.from && dateRange.to
             ? `${format(dateRange.from, 'yyyy.MM.dd(EEE)', { locale: ko })} ~ ${format(dateRange.to, 'yyyy.MM.dd(EEE)', { locale: ko })}`
             : '날짜를 선택하세요'}
@@ -107,11 +104,6 @@ const WeatherDateRangePicker: React.FC<WeatherDateRangePickerProps> = ({ onDateR
             >
               <X className="wdrp-close-icon h-5 w-5" />
             </button>
-            <CitySelector
-              cities={cities}
-              selectedCity={selectedCity}
-              setSelectedCity={setSelectedCity}
-            />
             <CalendarHeader
               currentMonth={currentMonth}
               setCurrentMonth={setCurrentMonth}
