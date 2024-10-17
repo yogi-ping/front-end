@@ -1,9 +1,10 @@
+// SelectPlace.tsx
 import React from 'react';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 
 interface SelectPlaceProps {
     isSelected: boolean;
-    onSelect: () => void;
+    onSelect: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const SelectPlace: React.FC<SelectPlaceProps> = ({ isSelected, onSelect }) => {
