@@ -1,3 +1,4 @@
+// PlaceListItem.tsx
 import React from 'react';
 import SelectPlace from './SelectPlace'; // SelectPlace 컴포넌트 임포트
 
@@ -23,11 +24,15 @@ const PlaceListItem: React.FC<PlaceListItemProps> = ({ place, onSelect }) => {
                 place.isSelected ? 'bg-blue-100' : 'bg-white'
             }`}
         >
-            <div className='flex flex-col'>
+            <div
+                className='flex flex-col'
+                onClick={onSelect} // 리스트 아이템 내용 클릭 시 선택되도록 수정
+            >
                 <p className='font-semibold text-lg'>{place.name}</p>
                 <p className='text-sm text-gray-600'>{place.category}</p>
                 <div className='text-gray-500 flex items-center space-x-2'>
                     <span className='flex items-center'>
+                        {/* 리뷰 수 아이콘 및 텍스트 */}
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
                             className='h-5 w-5'
@@ -39,6 +44,7 @@ const PlaceListItem: React.FC<PlaceListItemProps> = ({ place, onSelect }) => {
                         {place.reviews.toLocaleString()}
                     </span>
                     <span className='flex items-center'>
+                        {/* 평점 아이콘 및 텍스트 */}
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
                             className='h-5 w-5'
@@ -53,7 +59,13 @@ const PlaceListItem: React.FC<PlaceListItemProps> = ({ place, onSelect }) => {
             </div>
 
             {/* 선택 버튼 */}
-            <SelectPlace isSelected={place.isSelected} onSelect={onSelect} />
+            <SelectPlace
+                isSelected={place.isSelected}
+                onSelect={(event) => {
+                    event.stopPropagation(); // 이벤트 버블링 방지
+                    onSelect();
+                }}
+            />
         </li>
     );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from './header/Header';
+
 import CardList from './planlist/CardList';
 import WeatherDateRangePicker from '../calendar/WeatherDateRangePicker';
 import { useLocation } from 'react-router-dom'; // useLocation 훅 사용
@@ -19,13 +19,14 @@ const Index: React.FC<IndexProps> = ({ onDateRangeChange }) => {
 
     return (
         <div className='w-[400px] flex flex-col px-[35px] py-[20px]'>
-            <Header />
-            <CardList />
-            <div className='flex justify-start items-start'>
+            <div className='flex justify-start mt-2 items-start'>
                 <WeatherDateRangePicker
                     onDateRangeChange={onDateRangeChange}
                     selectedCity={selectedCity} // 선택된 도시 전달
                 />
+            </div>
+            <div className='flex mt-6'>
+                <CardList />
             </div>
         </div>
     );

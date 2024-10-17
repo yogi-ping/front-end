@@ -1,19 +1,19 @@
+// Plan.tsx
 import React, { useState } from 'react';
 import { IndexSidemenu } from '../components/plan/sidemenu/IndexSidemenu';
 import { PlaceList } from '../components/plan/selectplace/PlaceList';
 import DetailPlan from '../components/plan/detailplan/index';
-import MapComponent from '../components/common/MapComponent'; // MapComponent 임포트
+import MapComponent from '../components/common/MapComponent';
+import SelectButton from '../components/common/SelectButton';
 
-// plan 컴포넌트를 최상위 컴포넌트로 설정
-// daterange 상태 정의
+// DateRange 인터페이스 정의
 interface DateRange {
     from: Date | undefined;
     to: Date | undefined;
 }
 
-// handleDateRangeChange 함수 정의 (daterange를 업데이트하는 함수)
-// 이 상태와 함수가 자식 컴포넌트들에게 props로 전달
 export const Plan: React.FC = () => {
+    // 날짜 범위 상태
     const [dateRange, setDateRange] = useState<DateRange>({
         from: undefined,
         to: undefined,
@@ -22,6 +22,9 @@ export const Plan: React.FC = () => {
     const handleDateRangeChange = (newDateRange: DateRange) => {
         setDateRange(newDateRange);
     };
+
+    // 장소 추가 상태 관리
+    const [isAddingLocation, setIsAddingLocation] = useState<boolean>(false);
 
     return (
         <div className='w-full h-screen flex'>
@@ -32,15 +35,38 @@ export const Plan: React.FC = () => {
                     <IndexSidemenu dateRange={dateRange} />
                 </div>
 
-                {/* 디테일 플랜 (고정된 너비) */}
-                <div className='w-[380px]'>
-                    <DetailPlan onDateRangeChange={handleDateRangeChange} />
+                {/* 디테일 플랜 및 버튼 영역 */}
+                <div className='w-[380px] flex flex-col'>
+                    <div className='flex justify-between items-center'>
+                        <div className='flex justify-center items-center mt-2'>
+                            {/* 제주 글자에 margin-left 추가 */}
+                            <p className='text-[30px] font-bold mr-40 ml-8'>
+                                제주
+                            </p>{' '}
+                            {/* ml-8로 왼쪽 여백 추가 */}
+                            <p className='text-[15px] font-semibold mr-[15px]'>
+                                장소추가
+                            </p>
+                            <SelectButton
+                                isAddingLocation={isAddingLocation}
+                                setIsAddingLocation={setIsAddingLocation}
+                            />
+                        </div>
+                    </div>
+
+                    {/* DetailPlan 컴포넌트를 살짝 위로 이동 */}
+                    <div className='mt-[-20px]'>
+                        {/* mt-2로 위쪽 여백을 줄임 */}
+                        <DetailPlan onDateRangeChange={handleDateRangeChange} />
+                    </div>
                 </div>
 
-                {/* 장소 리스트 (고정된 너비) */}
-                <div className='w-[600px]'>
-                    <PlaceList />
-                </div>
+                {/* 장소 리스트를 isAddingLocation 상태에 따라 조건부 렌더링 */}
+                {isAddingLocation && (
+                    <div className='w-[600px]'>
+                        <PlaceList />
+                    </div>
+                )}
             </div>
 
             {/* 지도 영역 (남는 공간을 모두 차지) */}
@@ -54,3 +80,5 @@ export const Plan: React.FC = () => {
         </div>
     );
 };
+
+export default Plan;

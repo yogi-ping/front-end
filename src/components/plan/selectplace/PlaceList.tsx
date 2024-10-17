@@ -1,14 +1,18 @@
 /// <reference types="google.maps" />
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PlaceListItem, { Place } from './PlaceListItem';
 import SearchBar from './SearchBar';
-import MapComponent from '../../common/MapComponent'; // 경로를 명확하게 설정
+import { SelectedPlacesContext } from '../../common/SelectedPlacesContext'; // 경로를 실제 경로로 수정하세요
 
 export const PlaceList: React.FC = () => {
-    const [places, setPlaces] = useState<Place[]>([]); // 장소 데이터를 저장하는 상태
-    const [searchTerm, setSearchTerm] = useState(''); // 검색어 관리
-    const [selectedPlace, setSelectedPlace] = useState<Place | null>(null); // 선택된 장소
-    const [apiLoaded, setApiLoaded] = useState(false); // API 로드 상태
+    const [places, setPlaces] = useState<Place[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [apiLoaded, setApiLoaded] = useState(false);
+
+    // 컨텍스트에서 selectedPlaces와 setSelectedPlaces 가져오기
+    const { selectedPlaces, setSelectedPlaces } = useContext(
+        SelectedPlacesContext
+    );
 
     // Google Maps API 로드 여부 확인
     useEffect(() => {
@@ -35,16 +39,16 @@ export const PlaceList: React.FC = () => {
                 document.createElement('div')
             );
             const request = {
-                location: { lat: 33.4996, lng: 126.5312 }, // 제주도의 좌표
-                radius: 5000, // 검색 반경 (단위: 미터)
-                type: 'tourist_attraction', // 명소 타입
+                location: { lat: 33.4996, lng: 126.5312 },
+                radius: 5000,
+                type: 'tourist_attraction',
             };
 
             service.nearbySearch(
                 request,
                 (
-                    results: google.maps.places.PlaceResult[], // Google Places API에서 반환된 결과 타입
-                    status: google.maps.places.PlacesServiceStatus // Google Places API에서 반환된 상태
+                    results: google.maps.places.PlaceResult[],
+                    status: google.maps.places.PlacesServiceStatus
                 ) => {
                     if (
                         status ===
@@ -53,19 +57,18 @@ export const PlaceList: React.FC = () => {
                         const formattedPlaces: Place[] = results.map(
                             (place, index) => ({
                                 id: index + 1,
-                                name: place.name || 'Unknown Place', // 이름이 없을 때 기본 값 설정
+                                name: place.name || 'Unknown Place',
                                 category: place.types?.join(', ') || '명소',
                                 rating: place.rating || 0,
                                 reviews: place.user_ratings_total || 0,
                                 isSelected: false,
-                                // location 값을 geometry로부터 추출
                                 location: {
                                     lat: place.geometry?.location?.lat() || 0,
                                     lng: place.geometry?.location?.lng() || 0,
                                 },
                             })
                         );
-                        setPlaces(formattedPlaces); // 받아온 데이터를 상태에 저장
+                        setPlaces(formattedPlaces);
                     } else {
                         console.error('Places service failed:', status);
                     }
@@ -73,21 +76,40 @@ export const PlaceList: React.FC = () => {
             );
         };
 
-        fetchPlacesData(); // 컴포넌트가 마운트될 때 데이터 가져오기
-    }, [apiLoaded]); // API 로드가 완료된 후에만 데이터를 가져옴
+        fetchPlacesData();
+    }, [apiLoaded]);
 
+    // 선택된 장소 관리
     const handleSelectPlace = (id: number) => {
-        const selected = places.find((place) => place.id === id);
-        if (selected) {
-            setSelectedPlace(selected); // 선택된 장소를 상태에 저장
-        }
-        setPlaces((prevPlaces) =>
-            prevPlaces.map((place) =>
-                place.id === id
-                    ? { ...place, isSelected: !place.isSelected }
-                    : place
-            )
+        // 선택된 장소 찾기
+        const selectedPlace = places.find((place) => place.id === id);
+        if (!selectedPlace) return;
+
+        // 선택 상태 토글
+        const isSelected = !selectedPlace.isSelected;
+
+        // `places` 상태 업데이트
+        const updatedPlaces = places.map((place) =>
+            place.id === id ? { ...place, isSelected } : place
         );
+        setPlaces(updatedPlaces);
+
+        // `selectedPlaces` 상태 업데이트
+        if (isSelected) {
+            // 선택된 경우 추가 (중복 방지)
+            setSelectedPlaces((prevSelected) => {
+                // 이미 존재하는지 확인
+                if (!prevSelected.some((place) => place.id === id)) {
+                    return [...prevSelected, { ...selectedPlace, isSelected }];
+                }
+                return prevSelected;
+            });
+        } else {
+            // 선택 해제된 경우 제거
+            setSelectedPlaces((prevSelected) =>
+                prevSelected.filter((place) => place.id !== id)
+            );
+        }
     };
 
     const filteredPlaces = places.filter((place) =>
@@ -95,17 +117,15 @@ export const PlaceList: React.FC = () => {
     );
 
     return (
-        <div className='w-[600px] flex flex-col px-[35px] py-[20px]'>
+        <div className='w-[600px] flex flex-col px-[20px] '>
             <div className='flex py-[20px] items-center'>
                 <p className='text-[20px] font-semibold mr-[5px]'>장소 선택</p>
             </div>
 
-            {/* 검색바 */}
-            <div className='py-[20px]'>
+            <div className='py-[5px]'>
                 <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
             </div>
 
-            {/* 장소 리스트 */}
             <ul className='space-y-2 overflow-y-auto'>
                 {filteredPlaces.map((place) => (
                     <PlaceListItem
@@ -115,21 +135,6 @@ export const PlaceList: React.FC = () => {
                     />
                 ))}
             </ul>
-
-            {/* 선택된 장소가 있을 경우 지도 표시 */}
-            {selectedPlace && (
-                <div className='mt-[20px]'>
-                    <h3>선택된 장소: {selectedPlace.name}</h3>
-                    <MapComponent
-                        center={{
-                            lat: selectedPlace.location.lat,
-                            lng: selectedPlace.location.lng,
-                        }}
-                        radius={1000}
-                        placeType='tourist_attraction'
-                    />
-                </div>
-            )}
         </div>
     );
 };
