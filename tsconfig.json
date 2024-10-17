@@ -1,7 +1,12 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    "compilerOptions": {
+        "jsx": "react", // JSX 지원
+        "esModuleInterop": true, // React 및 CommonJS 모듈 호환성
+        "module": "esnext", // 최신 모듈 시스템 사용
+        "target": "es6", // 최신 ECMAScript 사용
+        "lib": ["dom", "esnext"], // DOM 및 ECMAScript 라이브러리 사용
+        "types": ["google.maps", "node"], // Google Maps 및 Node.js 타입 추가
+        "moduleResolution": "node" // 모듈 해석 방식을 Node.js로 설정
+    },
+    "include": ["src"] // src 디렉터리의 파일들을 컴파일 대상으로 설정
 }
